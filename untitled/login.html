@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-control {
+            border-radius: 20px;
+            padding-left: 2.5rem;
+        }
+
+        .input-group-text {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .btn-custom {
+            width: 100%;
+            border-radius: 20px;
+            background: #764ba2;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn-custom:hover {
+            background: #5a3a8b;
+        }
+
+        .register-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h3 class="text-center mb-4">Login</h3>
+    <form onsubmit="handleLogin(event)">
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fas fa-user fa-bounce"></i></span>
+            <input type="text" class="form-control" placeholder="Username" required>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fas fa-lock fa-bounce"></i></span>
+            <input type="password" class="form-control" placeholder="Password" required>
+        </div>
+        <button class="btn btn-custom" type="submit"><i class="fa-solid fa-right-from-bracket fa-beat-fade"></i> Login</button>
+        <a href="register.html" class="register-link">Don't you have an account? Register</a>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    function handleLogin(event) {
+        event.preventDefault();
+        axios.post("http://localhost:8080/login", {
+            username: event.target[0].value,
+            password: event.target[1].value
+        }).then(res => {
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("user", JSON.stringify(res.data));
+            window.location.href = "index.html";
+        }).catch(() => {
+            alert("Invalid login credentials.");
+        });
+    }
+</script>
+
+</body>
+</html>

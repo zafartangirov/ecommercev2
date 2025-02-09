@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add product</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+
+        .card {
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 15px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .text-center label {
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .text-center label img {
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .text-center label img:hover {
+            transform: scale(1.1);
+        }
+
+        .form-control {
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #495057;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-dark {
+            background-color: #343a40;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dark:hover {
+            background-color: #495057;
+            transform: scale(1.05);
+        }
+
+        .btn-dark:after {
+            content: ' ➔';
+            transition: content 0.3s ease;
+        }
+
+        .btn-dark:hover:after {
+            content: ' ✓';
+        }
+
+        .card-header::before {
+            content: "🛒 ";
+        }
+    </style>
+</head>
+<body>
+
+<div id="loader-container"
+     style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+    <dotlottie-player
+            src="https://lottie.host/d9384c6f-237a-415f-b485-a6dae9c99d97/QfZOLwj8DB.lottie"
+            background="transparent"
+            speed="1"
+            style="width: 300px; height: 300px"
+            loop
+            autoplay
+    ></dotlottie-player>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-6">
+        <div id="heading" class="card-header bg-dark text-white">
+            Add product
+        </div>
+        <div class="card-body" id="card-body">
+            <div class="text-center">
+                <label class="mb-2">
+                    <img id="img" src="images/default.jpg" alt="not found" width="100" height="100">
+                    <input style="display: none; cursor: pointer" onchange="uploadFile(event)" type="file">
+                </label>
+            </div>
+            <form onsubmit="saveProduct(event)">
+                <div class="mb-2">
+                    <input type="text" placeholder="Name" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <input type="number" placeholder="Price" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <select id="selectjon" class="form-select">
+                    </select>
+                </div>
+                <button class="btn btn-dark w-100 my-2">Save</button>
+                <button class="btn btn-danger w-100 my-2" type="button" onclick="return confirmDeletion(event)">Delete
+                    this product
+                </button>
+                <a href="index.html" class="btn btn-secondary w-100">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    let params = new URLSearchParams(new URL(window.location.href).search);
+    let currentProductId = params.get("productId");
+    let photoId = "";
+    let img = document.getElementById("img")
+    let select = document.getElementById("selectjon")
+    let heading = document.getElementById("heading")
+    let cardbody = document.getElementById("card-body");
+
+
+    if (currentProductId) {
+        heading.innerText = "Update product"
+
+        axios({
+            url: "http://localhost:8080/product/" + currentProductId,
+            method: "get",
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(res => {
+            let product = res.data;
+            let form = document.forms[0];
+            form[0].value = product.name;
+            form[1].value = product.price;
+            form[2].value = product.category.id;
+            photoId = product.photo.id;
+            img.src = "http://localhost:8080/file/" + product.photo.id
+        })
+    }
+    getCategories();
+
+    function getCategories() {
+        axios({
+            url: "http://localhost:8080/category",
+            method: "get",
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then(res => {
+            let s = "";
+            s += `<option selected disabled>Select category</option>`
+            for (let item of res.data) {
+                s += `<option value="${item.id}">${item.name}</option>`
+            }
+            select.innerHTML = s;
+        })
+    }
+
+    function uploadFile(event) {
+        let file = event.target.files[0];
+        let formData = new FormData();
+        formData.append("file", file);
+        axios.post("http://localhost:8080/file", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "token": localStorage.getItem("token")
+            }
+        }).then(res => {
+            img.src = "http://localhost:8080/file/" + res.data;
+            photoId = res.data;
+        })
+    }
+
+
+    function saveProduct(event) {
+        event.preventDefault()
+        if (photoId) {
+            axios({
+                url: currentProductId ? "http://localhost:8080/product/" + currentProductId : "http://localhost:8080/product",
+                method: currentProductId ? "put" : "post",
+                headers: {
+                    "token": localStorage.getItem("token")
+                },
+                data: {
+                    name: event.target[0].value,
+                    price: event.target[1].value,
+                    categoryId: event.target[2].value,
+                    attachmentId: photoId
+                }
+            }).then(res => {
+                let a = document.createElement("a");
+                a.href = "index.html";
+                a.click();
+            })
+        } else {
+            alert("rasm tanlamay iloj yo'q")
+        }
+    }
+
+    function confirmDeletion(event) {
+        const isConfirmed = confirm('Are you sure you want to delete this product? After this, you cannot restore');
+        if (!isConfirmed) {
+            event.preventDefault();
+        }
+        deleteProduct();
+    }
+
+    function deleteProduct() {
+        axios({
+            url: "http://localhost:8080/product/delete/" + currentProductId,
+            method: "delete",
+            headers: {
+                "token": localStorage.getItem("token")
+            }
+        }).then((res => {
+            let a = document.createElement("a");
+            a.href = "index.html";
+            a.click();
+        }))
+    }
+
+</script>
+
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            const loaderContainer = document.getElementById("loader-container");
+            if (loaderContainer) {
+                loaderContainer.style.transition = "opacity 0.5s ease";
+                loaderContainer.style.opacity = "0";
+                setTimeout(() => {
+                    loaderContainer.style.display = "none";
+                }, 500);
+            }
+        }, 5000);
+    });
+</script>
+
+</body>
+</html>
