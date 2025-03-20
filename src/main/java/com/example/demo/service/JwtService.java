@@ -24,7 +24,7 @@ public class JwtService {
             sj.add(role.getRoleName().toString());
         }
         claims.put("roles", sj.toString());
-        return Jwts.builder()
+        return "Bearer " + Jwts.builder()
                 .subject(user.getUsername())
                 .claims(claims)
                 .signWith(getSecretKey())

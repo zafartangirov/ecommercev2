@@ -9,6 +9,7 @@ import com.example.demo.entity.User;
 import com.example.demo.repo.RoleRepository;
 import com.example.demo.repo.UserRepository;
 import com.example.demo.service.JwtService;
+import com.example.demo.service.RegisterService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,30 +28,14 @@ import java.util.List;
 @RequestMapping("/register")
 public class RegisterController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final RegisterService registerService;
 
-    public RegisterController(AuthenticationManager authenticationManager, JwtService jwtService, RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    public RegisterController(RegisterService registerService) {
+        this.registerService = registerService;
     }
 
     @PostMapping
     public HttpEntity<?> register(@RequestBody RegisterDTO registerDTO){
-        List<Role> allRoles = roleRepository.findAll();
-        User user = User.builder()
-                .roles(new ArrayList<>(List.of(allRoles.get(0))))
-                .username(registerDTO.getUsername())
-                .password(passwordEncoder.encode(registerDTO.getPassword()))
-                .fullName(registerDTO.getFullName())
-                .build();
-        userRepository.save(user);
-        return ResponseEntity.ok("Registered successfully");
+        return registerService.register(registerDTO);
     }
 }

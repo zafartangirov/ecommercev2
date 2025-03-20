@@ -80,7 +80,7 @@
 
         function fetchUsers() {
             axios.get("http://localhost:8080/user", {
-                headers: {"token": token}
+                headers: {Authorization: token}
             }).then(res => {
                 let s = "";
                 for (let item of res.data) {
@@ -103,7 +103,7 @@
             let selectRole = document.getElementById("role_select");
 
             axios.get("http://localhost:8080/role", {
-                headers: {"token": token}
+                headers: {Authorization: token}
             }).then(res => {
                 let s = "<option selected disabled>Select role</option>";
                 for (let item of res.data) {
@@ -119,7 +119,7 @@
             document.getElementById("saveButton").innerText = "Save Changes";
 
             axios.get("http://localhost:8080/user/" + id, {
-                headers: {"token": token}
+                headers: {Authorization: token}
             }).then(res => {
                 let user = res.data;
                 document.getElementById("fullName").value = user.fullName;
@@ -155,7 +155,7 @@
             if (obj.password === obj.passwordRepeat) {
                 if (userId) {
                     axios.put("http://localhost:8080/user/" + userId, obj, {
-                        headers: {"token": token}
+                        headers: {Authorization: token}
                     }).then(() => {
                         fetchUsers();
                         document.getElementById("addUserForm").reset();
@@ -163,7 +163,7 @@
                     }).catch(error => console.error(error));
                 } else {
                     axios.post("http://localhost:8080/user", obj, {
-                        headers: {"token": token}
+                        headers: {Authorization: token}
                     }).then(() => {
                         fetchUsers();
                         document.getElementById("addUserForm").reset();
@@ -193,7 +193,7 @@
 
         function deleteUser(id) {
             axios.delete("http://localhost:8080/user/" + id, {
-                headers: {"token": token}
+                headers: {Authorization: token}
             }).then(() => {
                 fetchUsers();
             }).catch(error => console.error(error));

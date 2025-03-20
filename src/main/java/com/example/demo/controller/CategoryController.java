@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.CategorySaveDTO;
 import com.example.demo.entity.Category;
 import com.example.demo.repo.CategoryRepository;
+import com.example.demo.service.CategoryService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -15,46 +16,39 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping
     public List<Category> getCategories(){
-        return categoryRepository.findAll();
+        return categoryService.getAllCategories();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Category getOneCategory(@PathVariable Integer id){
-        return categoryRepository.findById(id).orElseThrow();
+        return categoryService.getOneCategoryById(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @DeleteMapping("/delete/{id}")
     public void deleteCategory(@PathVariable Integer id){
-        categoryRepository.deleteById(id);
+        categoryService.deleteCategoryById(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public void save(@RequestBody CategorySaveDTO categorySaveDTO){
-        Category category = Category.builder()
-                .name(categorySaveDTO.getName())
-                .build();
-        categoryRepository.save(category);
+        categoryService.save(categorySaveDTO);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public void update(@RequestBody CategorySaveDTO categorySaveDTO, @PathVariable Integer id){
-        Category category = Category.builder()
-                .id(id)
-                .name(categorySaveDTO.getName())
-                .build();
-        categoryRepository.save(category);
+        categoryService.update(categorySaveDTO, id);
     }
 }

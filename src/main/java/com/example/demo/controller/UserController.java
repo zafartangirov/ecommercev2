@@ -5,6 +5,7 @@ import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.repo.RoleRepository;
 import com.example.demo.repo.UserRepository;
+import com.example.demo.service.UserService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,62 +21,38 @@ import java.util.Optional;
 @PreAuthorize("hasRole('SUPER_ADMIN')")
 @RequestMapping("/user")
 public class UserController {
+    private final UserService userService;
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    public UserController(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public HttpEntity<?> getUsers(@AuthenticationPrincipal User user){
-        System.out.println(user);
-        return ResponseEntity.ok(userRepository.findAll());
+    public HttpEntity<?> getUsers(@AuthenticationPrincipal User user) {
+        return userService.getUsers(user);
     }
 
     @GetMapping("/{id}")
-    public User getOneUser(@PathVariable Integer id){
-        Optional<User> user = userRepository.findById(id);
-        return user.orElseThrow();
+    public User getOneUser(@PathVariable Integer id) {
+        return userService.getOneUserById(id);
     }
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PostMapping
-    public HttpEntity<?> createUser(@RequestBody UserDTO userDTO){
-        List<Role> roles = roleRepository.findByIdIn(userDTO.getRoleIds());
-        User user = User.builder()
-                .username(userDTO.getUsername())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .fullName(userDTO.getFullName())
-                .roles(roles)
-                .build();
-        userRepository.save(user);
-        return ResponseEntity.status(201).body(user);
+    public HttpEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        return userService.createUser(userDTO);
     }
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PutMapping("/{id}")
-    public HttpEntity<?> updateUser(@RequestBody UserDTO userDTO, @PathVariable Integer id){
-        List<Role> roles = roleRepository.findByIdIn(userDTO.getRoleIds());
-        User user = User.builder()
-                .id(id)
-                .username(userDTO.getUsername())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .fullName(userDTO.getFullName())
-                .roles(roles)
-                .build();
-        userRepository.save(user);
-        return ResponseEntity.ok(user);
+    public HttpEntity<?> updateUser(@RequestBody UserDTO userDTO, @PathVariable Integer id) {
+        return userService.updateUser(userDTO, id);
     }
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Transactional
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Integer id){
-        userRepository.deleteById(id);
+    public void deleteUser(@PathVariable Integer id) {
+        userService.deleteUser(id);
     }
 }

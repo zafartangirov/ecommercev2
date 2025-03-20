@@ -154,7 +154,7 @@
             url: "http://localhost:8080/product/" + currentProductId,
             method: "get",
             headers: {
-                "token": localStorage.getItem("token")
+                Authorization: localStorage.getItem("token")
             }
         }).then(res => {
             let product = res.data;
@@ -173,7 +173,7 @@
             url: "http://localhost:8080/category",
             method: "get",
             headers: {
-                "token": localStorage.getItem("token")
+                Authorization: localStorage.getItem("token")
             }
         }).then(res => {
             let s = "";
@@ -192,7 +192,7 @@
         axios.post("http://localhost:8080/file", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
-                "token": localStorage.getItem("token")
+                Authorization: localStorage.getItem("token")
             }
         }).then(res => {
             img.src = "http://localhost:8080/file/" + res.data;
@@ -208,7 +208,7 @@
                 url: currentProductId ? "http://localhost:8080/product/" + currentProductId : "http://localhost:8080/product",
                 method: currentProductId ? "put" : "post",
                 headers: {
-                    "token": localStorage.getItem("token")
+                    Authorization: localStorage.getItem("token")
                 },
                 data: {
                     name: event.target[0].value,
@@ -239,7 +239,7 @@
             url: "http://localhost:8080/product/delete/" + currentProductId,
             method: "delete",
             headers: {
-                "token": localStorage.getItem("token")
+                Authorization: localStorage.getItem("token")
             }
         }).then((res => {
             let a = document.createElement("a");

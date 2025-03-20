@@ -74,7 +74,7 @@
             fetch("http://localhost:8080/order", {
                 method: "POST",
                 headers: {
-                    "token": localStorage.getItem("token"),
+                    Authorization: localStorage.getItem("token"),
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(basketData)

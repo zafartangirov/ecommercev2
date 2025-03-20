@@ -35,8 +35,9 @@ public class MyFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader("token");
+        String token = request.getHeader("Authorization");
         if (token != null){
+            token = token.substring(7);
             if (jwtService.validate(token)) {
                 String username = jwtService.getUsername(token);
                 List<SimpleGrantedAuthority> roles = jwtService.getRoles(token);

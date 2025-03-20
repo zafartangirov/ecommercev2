@@ -115,7 +115,7 @@
             url: "http://localhost:8080/category/" + currentCategoryId,
             method: "get",
             headers: {
-                "token": localStorage.getItem("token")
+                Authorization: localStorage.getItem("token")
             }
         }).then(res => {
             let category = res.data;
@@ -130,7 +130,7 @@
             url: currentCategoryId ? "http://localhost:8080/category/" + currentCategoryId : "http://localhost:8080/category",
             method: currentCategoryId ? "put" : "post",
             headers: {
-                "token": localStorage.getItem("token")
+                Authorization: localStorage.getItem("token")
             },
             data: {
                 name: event.target[0].value

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.repo.RoleRepository;
+import com.example.demo.service.RoleService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/role")
 public class RoleController {
 
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    public RoleController(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     @GetMapping
     public HttpEntity<?> getRoles(){
-        return ResponseEntity.ok(roleRepository.findAll());
+        return roleService.getRoles();
     }
 }

@@ -58,7 +58,7 @@
         axios.get("http://localhost:8080/order",
             {
                 headers: {
-                    "token": localStorage.getItem("token")
+                    Authorization: localStorage.getItem("token")
                 }
             }
         )

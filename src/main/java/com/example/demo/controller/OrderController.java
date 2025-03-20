@@ -6,6 +6,9 @@ import com.example.demo.repo.OrderRepository;
 import com.example.demo.repo.ProductRepository;
 import com.example.demo.entity.OrderStatus;
 import com.example.demo.repo.UserRepository;
+import com.example.demo.service.OrderService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,64 +25,21 @@ import java.util.Optional;
 public class OrderController {
 
     @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderItemRepository orderItemRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private OrderService orderService;
 
     @PostMapping
     public String createOrder(@RequestBody List<BasketItem> basket, @AuthenticationPrincipal User user) {
-        Order order = new Order();
-        order.setUser(user);
-        order.setStatus(OrderStatus.CREATED);
-        order = orderRepository.save(order);
-
-        for (BasketItem item : basket) {
-            Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
-
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            orderItem.setProduct(product);
-            orderItem.setAmount(item.getQuantity());
-            orderItemRepository.save(orderItem);
-        }
-        return "Order created successfully!";
+        return orderService.createOrder(basket, user);
     }
     @GetMapping
     public List<OrderResponse> getAllOrders(@AuthenticationPrincipal User user) {
-        List<Order> orders = orderRepository.findAllByUserId(user.getId());
-        return orders.stream().map(order -> {
-            List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
-
-            List<OrderItemResponse> items = orderItems.stream()
-                    .map(item -> new OrderItemResponse(
-                            item.getProduct().getName(),
-                            item.getProduct().getPrice(),
-                            item.getAmount(),
-                            item.getProduct().getPhoto()
-                    )).toList();
-
-            return new OrderResponse(
-                    order.getId(),
-                    order.getUser(),
-                    order.getDateTime(),
-                    order.getStatus().toString(),
-                    items
-            );
-        }).toList();
+        return orderService.getAllOrders(user);
     }
 
-    @Setter
-    @Getter
-    static class BasketItem {
+    @Data
+    @AllArgsConstructor
+    public static class BasketItem {
         private Integer productId;
         private Integer quantity;
-
     }
 }

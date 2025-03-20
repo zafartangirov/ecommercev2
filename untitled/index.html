@@ -313,7 +313,7 @@
         axios.delete(`http://localhost:8080/category/delete/${removingCategoryId}`,
             {
                 headers: {
-                    "token": localStorage.getItem("token")
+                    Authorization: localStorage.getItem("token")
                 }
             }
         )
@@ -328,7 +328,7 @@
 
     axios.get(categoryId ? `http://localhost:8080/product/bycategory/${categoryId}` : "http://localhost:8080/product", {
         headers: {
-            "token": localStorage.getItem("token")
+            Authorization: localStorage.getItem("token")
         }
     })
         .then(res => {
@@ -367,7 +367,7 @@
 
     axios.get("http://localhost:8080/category", {
         headers: {
-            "token": localStorage.getItem("token")
+            Authorization: localStorage.getItem("token")
         }
     })
         .then(res => {
@@ -441,7 +441,7 @@
         formData.append("file", file);
         axios.post("http://localhost:8080/file", formData, {
             headers: {
-                "token": localStorage.getItem("token"),
+                Authorization: localStorage.getItem("token"),
                 "Content-Type": "multipart/form-data"
             }
         })
@@ -461,7 +461,7 @@
                 attachmentId: photoId
             }, {
                 headers: {
-                    "token": localStorage.getItem("token")
+                    Authorization: localStorage.getItem("token")
                 }
             }).then(() => {
                 document.location.reload();
@@ -479,7 +479,7 @@
         axios.post("http://localhost:8080/category", {name: event.target[0].value},
             {
                 headers: {
-                    "token": localStorage.getItem("token")
+                    Authorization: localStorage.getItem("token")
                 }
             }
         )
@@ -490,7 +490,7 @@
         axios.get("http://localhost:8080/category",
             {
                 headers: {
-                    "token": localStorage.getItem("token")
+                    Authorization: localStorage.getItem("token")
                 }
             }
         )

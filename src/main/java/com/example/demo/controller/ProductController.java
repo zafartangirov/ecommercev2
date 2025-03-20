@@ -6,6 +6,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.repo.AttachmentRepository;
 import com.example.demo.repo.CategoryRepository;
 import com.example.demo.repo.ProductRepository;
+import com.example.demo.service.ProductService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -16,66 +17,44 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 @RequestMapping("/product")
 public class ProductController {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final AttachmentRepository attachmentRepository;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository, AttachmentRepository attachmentRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.attachmentRepository = attachmentRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/bycategory/{id}")
     public List<Product> getProducts(@PathVariable Integer id) {
-        if (id != null) {
-            return productRepository.findAllByCategory_Id(id);
-        } else {
-            return productRepository.findAll();
-        }
+        return productService.getProductsByCategoryId(id);
     }
 
     @GetMapping
     public List<Product> getProducts() {
-        return productRepository.findAll();
+        return productService.getAllProducts();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Product getOneProduct(@PathVariable Integer id) {
-        return productRepository.findById(id).orElseThrow();
+        return productService.getOneProductById(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public void deleteProduct(@PathVariable Integer id) {
-        productRepository.deleteById(id);
+        productService.deleteProductById(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public void save(@RequestBody ProductSaveDTO productSaveDTO) {
-        Product product = Product.builder()
-                .name(productSaveDTO.getName())
-                .price(productSaveDTO.getPrice())
-                .category(categoryRepository.findById(productSaveDTO.getCategoryId()).orElseThrow())
-                .photo(attachmentRepository.findById(productSaveDTO.getAttachmentId()).orElseThrow())
-                .build();
-        productRepository.save(product);
+        productService.save(productSaveDTO);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public void update(@RequestBody ProductSaveDTO productSaveDTO, @PathVariable Integer id) {
-        Product product = Product.builder()
-                .id(id)
-                .name(productSaveDTO.getName())
-                .price(productSaveDTO.getPrice())
-                .category(categoryRepository.findById(productSaveDTO.getCategoryId()).orElseThrow())
-                .photo(attachmentRepository.findById(productSaveDTO.getAttachmentId()).orElseThrow())
-                .build();
-
-        productRepository.save(product);
+        productService.update(productSaveDTO, id);
     }
 }
