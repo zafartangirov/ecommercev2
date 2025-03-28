@@ -26,14 +26,21 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/login", "/register", "/file/**", "/public/**", "/index.html", "/login.html", "/js/**", "/css/**").permitAll()
+                        .requestMatchers(
+                                "/", "/login", "/register",
+                                "/file/**", "/public/**",
+                                "/index.html", "/login.html",
+                                "/js/**", "/css/**", "/images/**", "/webjars/**", "/favicon.ico"
+                        ).permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
-                );
-        http.addFilterBefore(myFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(myFilter, UsernamePasswordAuthenticationFilter.class)
+                .securityMatcher("/**");
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
