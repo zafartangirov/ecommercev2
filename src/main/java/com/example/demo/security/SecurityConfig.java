@@ -52,4 +52,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
         return authenticationProvider::authenticate;
     }
+
 }
