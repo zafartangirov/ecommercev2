@@ -25,16 +25,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers(
-                                "/", "/login", "/register",
-                                "/file/**", "/public/**",
-                                "/index.html", "/login.html",
-                                "/js/**", "/css/**", "/images/**", "/webjars/**", "/favicon.ico"
-                        ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/file/**", "/public/**", "/index.html", "/login.html", "/js/**", "/css/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
-                )
-                .addFilterBefore(myFilter, UsernamePasswordAuthenticationFilter.class);
+                );
+        http.addFilterBefore(myFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
