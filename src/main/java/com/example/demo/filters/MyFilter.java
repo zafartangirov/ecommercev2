@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+
 public class MyFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
