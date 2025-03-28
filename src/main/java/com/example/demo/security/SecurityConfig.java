@@ -30,8 +30,6 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 );
-
-        // Add custom filter before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(myFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
