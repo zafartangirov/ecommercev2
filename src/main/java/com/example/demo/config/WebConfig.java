@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -15,6 +16,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "DELETE", "PUT", "OPTIONS")
                 .allowedHeaders("*");
     }
+
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
