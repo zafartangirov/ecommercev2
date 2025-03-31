@@ -24,15 +24,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, MyFilter myFilter) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req -> req
-                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers("/login", "/register", "/file/**", "/public/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(myFilter, UsernamePasswordAuthenticationFilter.class);
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())) // ✅ Enable CORS
+            .authorizeHttpRequests(req -> req
+                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                .requestMatchers("/login", "/register", "/file/**", "/public/**").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(myFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
