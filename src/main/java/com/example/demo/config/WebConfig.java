@@ -14,8 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("https://ecommercev1.up.railway.app/*")
                 .allowedMethods("GET", "POST", "DELETE", "PUT", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowedHeaders("*");
     }
 
     @Override
