@@ -30,6 +30,7 @@ public class SecurityConfig {
                                 "/", "/login", "/register",
                                 "/file/**", "/public/**",
                                 "/index.html", "/login.html",
+                                "/register.html",
                                 "/js/**", "/css/**", "/images/**", "/webjars/**", "/favicon.ico"
                         ).permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
