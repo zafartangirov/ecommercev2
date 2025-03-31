@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("https://ecommercev1.up.railway.app")
                 .allowedMethods("GET", "POST", "DELETE", "PUT", "OPTIONS")
                 .allowedHeaders("*")
-                .allowedCredentials(true);
+                .allowCredentials(true);
     }
 
     @Override
