@@ -3,43 +3,20 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CategorySaveDTO;
 import com.example.demo.entity.Category;
-import com.example.demo.repo.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CategoryService {
-    private final CategoryRepository categoryRepository;
+public interface CategoryService {
 
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    List<Category> getAllCategories();
 
-    public List<Category> getAllCategories(){
-        return categoryRepository.findAll();
-    }
+    Category getOneCategoryById(Integer id);
 
-    public Category getOneCategoryById(Integer id){
-        return categoryRepository.findById(id).orElseThrow();
-    }
+    void deleteCategoryById(Integer id);
 
-    public void deleteCategoryById(Integer id){
-        categoryRepository.deleteById(id);
-    }
+    void save(CategorySaveDTO categorySaveDTO);
 
-    public void save(CategorySaveDTO categorySaveDTO){
-        Category category = Category.builder()
-                .name(categorySaveDTO.getName())
-                .build();
-        categoryRepository.save(category);
-    }
-
-    public void update(CategorySaveDTO categorySaveDTO, Integer id){
-        Category category = Category.builder()
-                .id(id)
-                .name(categorySaveDTO.getName())
-                .build();
-        categoryRepository.save(category);
-    }
+    void update(CategorySaveDTO categorySaveDTO, Integer id);
 }

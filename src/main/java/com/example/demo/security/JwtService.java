@@ -1,7 +1,6 @@
-package com.example.demo.service;
+package com.example.demo.security;
 
 import com.example.demo.entity.Role;
-import com.example.demo.entity.RoleName;
 import com.example.demo.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

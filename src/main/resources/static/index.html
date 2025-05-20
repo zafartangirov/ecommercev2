@@ -140,17 +140,17 @@
     ></dotlottie-player>
 </div>
 
-<div class="sidebar">
+<div class="sidebar" style="height: 1500px">
     <h2>Categories</h2>
-    <ul id="categoryList" class="list-group"></ul>
+    <ul style="height: auto; width: auto" id="categoryList" class="list-group"></ul>
     <button id="addCategoryButton" class="btn btn-dark mx-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
         <i class="fa-solid fa-folder-plus"></i> Add category
     </button>
 </div>
 
 <div class="content">
-    <span id="spancha" style="position: fixed; top: 2px; left: 10px; margin-left: 300px; margin-top: 20px; color: white"></span>
-    <button class="btn btn-danger" style="position: fixed; top: 2px; left: 10px; margin-left: 550px; margin-top: 20px; color: white" onclick="logout()">Logout</button>
+    <span id="spancha" style="position: absolute; top: 2px; left: 10px; margin-left: 300px; margin-top: 20px; color: white"></span>
+    <button class="btn btn-danger" style="position: absolute; top: 2px; left: 10px; margin-left: 550px; margin-top: 20px; color: white" onclick="logout()">Logout</button>
     <h1 id="top-text" class="bg-dark text-white text-center mb-3">Welcome to market</h1>
 
     <button id="addProductButton" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">
@@ -185,7 +185,7 @@
             <div class="modal-body">
                 <div class="text-center">
                     <label class="mb-2">
-                        <img id="productImg" src="images/default.jpg" alt="not found">
+                        <img id="productImg" style="border-radius: 4px; cursor: pointer" src="images/default.jpg" alt="not found">
                         <input style="display: none; cursor: pointer" onchange="uploadFile(event)" type="file">
                     </label>
                 </div>
@@ -371,21 +371,21 @@
         }
     })
         .then(res => {
-            categoryList.innerHTML = `<a href="?"><li class="list-group-item d-flex justify-content-between ${!categoryId ? "active" : ""} my-2">
+            categoryList.innerHTML = `<a href="?"><li style="border-radius: 5px" class="list-group-item d-flex justify-content-between ${!categoryId ? "active" : ""} my-2">
         <span>All</span>
     </li></a>` + res.data.map(category => {
                 const updateButtonVisibility = isAdmin ? '' : 'style="display: none;"';
                 const deleteButtonVisibility = isUser ? 'style="display: none;"' : '';
 
                 return `
-            <li class="list-group-item d-flex justify-content-between ${categoryId == category.id ? "active" : ""} my-2">
+            <li class="list-group-item d-flex justify-content-between ${categoryId == category.id ? "active" : ""} my-1">
                 <a href="?categoryId=${category.id}" class="text-decoration-none text-light">${category.name}</a>
                 <a ${updateButtonVisibility} href="addCategory.html?categoryId=${category.id}" class="btn btn-warning btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-pen-line">
                         <path d="m18 5-2.414-2.414A2 2 0 0 0 14.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/>
                         <path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
                         <path d="M8 18h1"/>
-                    </svg> Update
+                    </svg>Update
                 </a>
                 <a ${deleteButtonVisibility} href="index.html?removingCategoryId=${category.id}" class="btn btn-danger btn-sm" onclick="return confirmDeletion(event)">
                     <i class="fas fa-trash"></i>
